@@ -1,4 +1,4 @@
-data = [int(line.split('\n')[0]) for line in open('data.txt')]
+data = [int(line) for line in open('data.txt')]
 
 for i in data:
     for j in data:
