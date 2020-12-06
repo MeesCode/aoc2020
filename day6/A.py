@@ -1,3 +1,1 @@
-al = [set()]
-[al.append(set()) if d == '' else al[-1].update(set(d)) for d in [i[:-1] for i in open('data.txt')]]
-print(sum([len(i) for i in al]))
+print(sum(len(s) for s in [set(i.replace('\n', '')) for i in open('data.txt').read()[:-1].split('\n\n')]))
