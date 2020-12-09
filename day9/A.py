@@ -1,14 +1,10 @@
-preamble_len = 25
-numbers = [int(i[:-1]) for i in open('data.txt')]
+n = [int(i[:-1]) for i in open('data.txt')]
 
 def get_sums(ls):
-    sums = []
-    for i in ls: 
-        for j in ls: sums.append(i+j)
-    return sums
+    return sum([[i+j for j in ls] for i in ls], [])
 
-for index in range(preamble_len, len(numbers)):
-    sums = get_sums(numbers[index-preamble_len:index])
-    if numbers[index] not in sums:
-        print(numbers[index])
-        exit()
+def find_answer(pl):
+    for i in range(pl, len(n)):
+        if n[i] not in get_sums(n[i-pl:i]): return n[i]
+
+print(find_answer(25))

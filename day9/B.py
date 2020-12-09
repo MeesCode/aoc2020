@@ -1,26 +1,16 @@
-preamble_len = 25
-numbers = [int(i[:-1]) for i in open('data.txt')]
+n = [int(i[:-1]) for i in open('data.txt')]
 
 def get_sums(ls):
-    sums = []
-    for i in ls: 
-        for j in ls: sums.append(i+j)
-    return sums
+    return sum([[i+j for j in ls] for i in ls], [])
 
-def find_number():
-    for index in range(preamble_len, len(numbers)):
-        sums = get_sums(numbers[index-preamble_len:index])
-        if numbers[index] not in sums:
-            print("number:", numbers[index])
-            return numbers[index]
+def find_number(pl):
+    for i in range(pl, len(n)):
+        if n[i] not in get_sums(n[i-pl:i]):
+            return n[i]
 
-target = find_number()
-search_len = 2
-while search_len < len(numbers):
-    print(search_len)
-    for i in range(search_len, len(numbers)):
-        print('target:', target, '\tsum:', sum(numbers[i-search_len:i]), '\tsearch space:', numbers[i-search_len:i])
-        if sum(numbers[i-search_len:i]) == target:
-            print(max(numbers[i-search_len:i]) + min(numbers[i-search_len:i]))
-            exit()
-    search_len += 1
+def find_answer(t):
+    for sl in range(2, len(n)):
+        for i in range(sl, len(n)):
+            if sum(n[i-sl:i]) == t: return max(n[i-sl:i]) + min(n[i-sl:i])
+
+print(find_answer(find_number(25)))
