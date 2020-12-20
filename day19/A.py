@@ -1,4 +1,4 @@
-import copy
+import re
 
 rules = {}
 strings = []
@@ -29,14 +29,21 @@ print(strings)
 regex = ""
 
 def to_tree(rule):
+    global regex
     global rules
     p_res = []
+    regex += '('
     for p_index, p in enumerate(rule):
         i_res = []
+
+        if p_index != 0:
+            regex += '|'
+
         for i_index, i in enumerate(p):
 
             if i.isalpha(): 
                 i_res.append(i)
+                regex += i
             else:
                 i_res.append(to_tree(rules[int(i)]))
 
@@ -45,22 +52,16 @@ def to_tree(rule):
         else:
             p_res.append(i_res)
 
+    regex += ')'
+
     if len(p_res) == 1:
         return p_res[0]
 
     return p_res
-            
-
 
 tree = to_tree(rules[0])
-print(tree)
 
-tree = str(tree)
-tree = tree.replace('[', '(')
-tree = tree.replace(']', ')')
-tree = tree.replace(', ', '')
-tree = tree.replace('\'', '')
-tree = tree.replace(')(', ')|(')
-tree = '^' + tree[1:-1] + '$'
+regex = '^' + regex + '$'
 
+print(regex)
 print(tree)
