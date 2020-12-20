@@ -10,30 +10,17 @@ cur_tile = {}
 cur_data = []
 
 def flip(my_data):
-    ret_data = ['' for _ in range(TILE_WIDTH)]
-    for i in range(TILE_HEIGHT):
+    ret_data = ['' for _ in range(len(my_data[0]))]
+    for i in range(len(my_data)):
         ret_data[i] = my_data[i][::-1]
     return ret_data
 
 def rotate(my_data):
-    ret_data = ['' for _ in range(TILE_WIDTH)]
-    for x in range(TILE_WIDTH):
-        for y in range(TILE_HEIGHT):
+    ret_data = ['' for _ in my_data]
+    for x in range(len(my_data[0])):
+        for y in range(len(my_data)):
             ret_data[x] += my_data[y][x]
     return flip(ret_data)
-
-# d = ['123', '456', '789']
-
-# print('flip')
-# for i in flip(d):
-#     print(i)
-# print()
-
-# print('rotate')
-# for i in rotate(d):
-#     print(i)
-# print()
-# exit()
 
 for line in [i[:-1] for i in open('data.txt')]:
 
@@ -196,3 +183,58 @@ for y in range(sidelength):
 
 print_grid(grid)
 print_graphic(grid)
+
+removed_borders = ['' for _ in range((TILE_HEIGHT-2) * sidelength)]
+
+for x in range(sidelength):
+    for y in range(sidelength):
+        for line in range(1, TILE_HEIGHT-1):
+            removed_borders[(y*(TILE_HEIGHT-2)) + (line-1)] += grid[y][x]['data'][line][1:-1]
+
+for i in removed_borders:
+    print(i)
+
+def roughness(pic):
+    d_count = 0
+    for y in range(len(pic)-2):
+        for x in range(18, len(pic[0]) - 1):
+            if (pic[y][x] == '#' and 
+                pic[y+1][x-18] == '#' and 
+                pic[y+1][x-13] == '#' and 
+                pic[y+1][x-12] == '#' and 
+                pic[y+1][x-7] == '#' and 
+                pic[y+1][x-6] == '#' and 
+                pic[y+1][x-1] == '#' and 
+                pic[y+1][x] == '#' and 
+                pic[y+1][x+1] == '#' and 
+                pic[y+2][x-17] == '#' and 
+                pic[y+2][x-14] == '#' and 
+                pic[y+2][x-11] == '#' and 
+                pic[y+2][x-8] == '#' and 
+                pic[y+2][x-5] == '#' and 
+                pic[y+2][x-2] == '#'):
+                d_count += 1
+
+    # print('Dragons:', d_count)
+
+    hashcounter = 0
+
+    for i in pic:
+        for j in i:
+            if j == '#':
+                hashcounter += 1
+
+    hashcounter -= d_count * 15
+
+    # print('roughness:', hashcounter)
+    return hashcounter
+
+min_hash = 999999999
+for _ in range(2): # flip
+    for _ in range(4): #rotate
+        min_hash = min(min_hash, roughness(removed_borders))
+
+        removed_borders = rotate(removed_borders)
+    removed_borders = flip(removed_borders)
+
+print("result:", min_hash)
