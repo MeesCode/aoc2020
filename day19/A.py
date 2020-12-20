@@ -22,19 +22,13 @@ for r in rules:
         if i[0][0] == '"': 
             i[0] = i[0][1:-1]
 
-all_rules = []
-print(rules)
-print(strings)
-
 regex = ""
 
 def to_tree(rule):
     global regex
     global rules
-    p_res = []
     regex += '('
     for p_index, p in enumerate(rule):
-        i_res = []
 
         if p_index != 0:
             regex += '|'
@@ -42,26 +36,14 @@ def to_tree(rule):
         for i_index, i in enumerate(p):
 
             if i.isalpha(): 
-                i_res.append(i)
                 regex += i
             else:
-                i_res.append(to_tree(rules[int(i)]))
-
-        if len(i_res) == 1:
-            p_res.append(i_res[0])
-        else:
-            p_res.append(i_res)
+                to_tree(rules[int(i)])
 
     regex += ')'
-
-    if len(p_res) == 1:
-        return p_res[0]
-
-    return p_res
 
 tree = to_tree(rules[0])
 
 regex = '^' + regex + '$'
 
 print(regex)
-print(tree)
