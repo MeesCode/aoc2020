@@ -22,28 +22,36 @@ for r in rules:
         if i[0][0] == '"': 
             i[0] = i[0][1:-1]
 
-regex = ""
+def regex_rec(rule, max_depth, depth=0):
 
-def to_tree(rule):
-    global regex
+    if depth > max_depth:
+        return ''
+
     global rules
-    regex += '('
+    my_regex = '('
     for p_index, p in enumerate(rule):
 
-        if p_index != 0:
-            regex += '|'
+        if p_index != 0: my_regex += '|'
 
         for i_index, i in enumerate(p):
 
-            if i.isalpha(): 
-                regex += i
-            else:
-                to_tree(rules[int(i)])
+            if i.isalpha(): return i
+            else: my_regex += regex_rec(rules[int(i)], max_depth, depth + 1)
 
-    regex += ')'
+    my_regex += ')'
+    return my_regex
 
-tree = to_tree(rules[0])
+def to_regex(rule, max_depth):
+    return '^' + regex_rec(rule, max_depth) + '$'
 
-regex = '^' + regex + '$'
+regex = to_regex(rules[0], 100)
 
 print(regex)
+
+counter = 0
+for i in strings:
+    if re.search(regex, i): 
+        # print('match:', i)
+        counter += 1
+
+print(counter)
